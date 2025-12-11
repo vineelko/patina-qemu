@@ -310,6 +310,8 @@ def _configure_settings(args: argparse.Namespace) -> Dict[str, Path]:
             "cirrus",
             "-serial",
             f"tcp:127.0.0.1:{args.serial_port},server,nowait",
+            "-monitor",
+            "telnet:127.0.0.1:55555,server,nowait",
         ]
         if args.gdb_port:
             qemu_cmd += ["-gdb", f"tcp::{args.gdb_port}"]
@@ -422,6 +424,8 @@ def _configure_settings(args: argparse.Namespace) -> Dict[str, Path]:
             "type=1,manufacturer=OpenDevicePartnership,product='QEMU SBSA',family=QEMU,version='9.0.0',serial=42-42-42-42",
             "-smbios",
             "type=3,manufacturer=OpenDevicePartnership,serial=42-42-42-42,asset=SBSA,sku=SBSA",
+            "-monitor",
+            "telnet:127.0.0.1:55555,server,nowait",
         ]
         if args.serial_port:
             qemu_cmd += ["-serial", f"tcp:127.0.0.1:{args.serial_port},server,nowait"]
