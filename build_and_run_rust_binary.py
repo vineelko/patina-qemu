@@ -122,6 +122,12 @@ def _parse_arguments() -> argparse.Namespace:
         help="Path to OS image to boot in QEMU.",
     )
     parser.add_argument(
+        "--disk",
+        type=Path,
+        default=None,
+        help="Path to a directory (size must be under 512 MB) that will be exposed to QEMU as a FAT disk.",
+    )
+    parser.add_argument(
         "--serial-port",
         "-s",
         type=int,
@@ -317,21 +323,7 @@ def _configure_settings(args: argparse.Namespace) -> Dict[str, Path]:
             "type=3,manufacturer=OpenDevicePartnership,serial=40-41-42-43",
             "-vga",
             "cirrus",
-            "-serial",
-            f"tcp:127.0.0.1:{args.serial_port},server,nowait",
         ]
-
-        if args.gdb_port:
-            qemu_cmd += ["-gdb", f"tcp::{args.gdb_port}"]
-
-        if args.monitor_port:
-            qemu_cmd += ["-monitor", f"telnet:127.0.0.1:{args.monitor_port},server,nowait"]
-
-        if args.os:
-            qemu_cmd += args.os
-            qemu_cmd += ["-m", "8192"]
-        else:
-            qemu_cmd += ["-m", "2048"]
 
         patch_cmd = [
             "python",
@@ -436,22 +428,7 @@ def _configure_settings(args: argparse.Namespace) -> Dict[str, Path]:
             "-smbios",
             "type=3,manufacturer=OpenDevicePartnership,serial=42-42-42-42,asset=SBSA,sku=SBSA",
         ]
-        if args.serial_port:
-            qemu_cmd += ["-serial", f"tcp:127.0.0.1:{args.serial_port},server,nowait"]
-        else:
-            qemu_cmd += ["-serial", "stdio"]
 
-        if args.gdb_port:
-            qemu_cmd += ["-gdb", f"tcp::{args.gdb_port}"]
-
-        if args.monitor_port:
-            qemu_cmd += ["-monitor", f"telnet:127.0.0.1:{args.monitor_port},server,nowait"]
-
-        if args.os:
-            qemu_cmd += args.os
-            qemu_cmd += ["-m", "8192"]
-        else:
-            qemu_cmd += ["-m", "2048"]
         patch_cmd = [
             "python",
             "patch.py",
@@ -470,6 +447,31 @@ def _configure_settings(args: argparse.Namespace) -> Dict[str, Path]:
     if args.features is not None:
         build_cmd.append("--features")
         build_cmd.append(str(args.features))
+
+    if args.os:
+        qemu_cmd += args.os
+        qemu_cmd += ["-m", "8192"]
+    else:
+        qemu_cmd += ["-m", "2048"]
+
+    if args.disk:
+        qemu_cmd += [
+            "-drive",
+            f"file=fat:rw:{args.disk},format=raw,if=none,id=fatdisk",
+            "-device",
+            "ide-hd,drive=fatdisk"
+        ]
+
+    if args.serial_port:
+        qemu_cmd += ["-serial", f"tcp:127.0.0.1:{args.serial_port},server,nowait"]
+    else:
+        qemu_cmd += ["-serial", "stdio"]
+
+    if args.gdb_port:
+        qemu_cmd += ["-gdb", f"tcp::{args.gdb_port}"]
+
+    if args.monitor_port:
+        qemu_cmd += ["-monitor", f"telnet:127.0.0.1:{args.monitor_port},server,nowait"]
 
     return {
         "build_cmd": build_cmd,
