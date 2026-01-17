@@ -72,8 +72,8 @@ class QemuCommandBuilder:
             return self
 
         self._rom_path_added = True
-        self._logger.debug("Setting ROM path to: %s", rom_dir)
-        self._args.extend(["-L", str(Path(rom_dir))])
+        self._logger.debug(f"Setting ROM path to: {rom_dir}")
+        self._args.extend(["-L", f"\"{str(Path(rom_dir))}\""])
         return self
 
     def with_machine(self, smm_enabled=True, accel=None):
@@ -103,7 +103,7 @@ class QemuCommandBuilder:
 
         return self
 
-    def with_cpu(self, model=None, core_count=4):
+    def with_cpu(self, model=None, core_count=None):
         """Configure CPU model and core count"""
         if self._cpu_added:
             self._logger.debug("CPU already configured, skipping")
@@ -140,9 +140,9 @@ class QemuCommandBuilder:
             self._args.extend(
                 [
                     "-drive",
-                    f"if=pflash,format=raw,unit=0,file={str(code_fd)},readonly=on",
+                    f"if=pflash,format=raw,unit=0,file=\"{str(code_fd)}\",readonly=on",
                     "-drive",
-                    f"if=pflash,format=raw,unit=1,file={str(vars_fd)}",
+                    f"if=pflash,format=raw,unit=1,file=\"{str(vars_fd)}\"",
                 ]
             )
         elif self._architecture == QemuArchitecture.SBSA:
@@ -151,12 +151,12 @@ class QemuCommandBuilder:
             # Unit 1: QEMU_EFI.fd (readonly)
             if vars_fd:
                 self._args.extend(
-                    ["-drive", f"if=pflash,format=raw,unit=0,file={str(vars_fd)}"]
+                    ["-drive", f"if=pflash,format=raw,unit=0,file=\"{str(vars_fd)}\""]
                 )
             self._args.extend(
                 [
                     "-drive",
-                    f"if=pflash,format=raw,unit=1,file={str(code_fd)},readonly=on",
+                    f"if=pflash,format=raw,unit=1,file=\"{str(code_fd)}\",readonly=on",
                 ]
             )
 
@@ -209,17 +209,14 @@ class QemuCommandBuilder:
             self._usb_storage_index += 1
 
         self._logger.debug(
-            "Adding USB storage device: %s (id=%s, format=%s)",
-            drive_file,
-            drive_id,
-            drive_format,
+            f"Adding USB storage device: {drive_file} (id={drive_id}, format={drive_format})"
         )
 
         if os.path.isfile(drive_file):
             self._args.extend(
                 [
                     "-drive",
-                    f"file={drive_file},format={drive_format},media=disk,if=none,id={drive_id}",
+                    f"file=\"{drive_file}\",format={drive_format},media=disk,if=none,id={drive_id}",
                     "-device",
                     f"usb-storage,bus=usb.0,drive={drive_id}",
                 ]
@@ -228,7 +225,7 @@ class QemuCommandBuilder:
             self._args.extend(
                 [
                     "-drive",
-                    f"file=fat:rw:{drive_file},format={drive_format},media=disk,if=none,id={drive_id}",
+                    f"file=fat:rw:\"{drive_file}\",format={drive_format},media=disk,if=none,id={drive_id}",
                     "-device",
                     f"usb-storage,bus=usb.0,drive={drive_id}",
                 ]
@@ -249,14 +246,14 @@ class QemuCommandBuilder:
             return self
 
         if os.path.isfile(virtual_drive):
-            self._logger.debug("Mounting virtual drive file: %s", virtual_drive)
-            self._args.extend(["-drive", f"file={virtual_drive},if=virtio"])
+            self._logger.debug(f"Mounting virtual drive file: {virtual_drive}")
+            self._args.extend(["-drive", f"file=\"{virtual_drive}\",if=virtio"])
         elif os.path.isdir(virtual_drive):
             self._logger.debug(
                 "Mounting virtual drive directory as FAT filesystem: %s", virtual_drive
             )
             self._args.extend(
-                ["-drive", f"file=fat:rw:{virtual_drive},format=raw,media=disk"]
+                ["-drive", f"file=fat:rw:\"{virtual_drive}\",format=raw,media=disk"]
             )
         else:
             self._logger.error(
@@ -281,7 +278,7 @@ class QemuCommandBuilder:
         if not path_to_os:
             return self
 
-        self._logger.debug("Configuring OS storage: %s", path_to_os)
+        self._logger.debug(f"Configuring OS storage: {path_to_os}")
 
         file_extension = Path(path_to_os).suffix.lower().replace('"', "")
 
@@ -295,13 +292,13 @@ class QemuCommandBuilder:
             raise Exception(f"Unknown OS storage type: {path_to_os}")
 
         if storage_format == "iso":
-            self._args.extend(["-cdrom", path_to_os])
+            self._args.extend(["-cdrom", f"\"{path_to_os}\""])
         else:
             if self._architecture == QemuArchitecture.Q35:
                 self._args.extend(
                     [
                         "-drive",
-                        f"file={path_to_os},format={storage_format},if=none,id=os_nvme",
+                        f"file=\"{path_to_os}\",format={storage_format},if=none,id=os_nvme",
                         "-device",
                         "nvme,serial=nvme-1,drive=os_nvme",
                     ]
@@ -310,7 +307,7 @@ class QemuCommandBuilder:
                 self._args.extend(
                     [
                         "-drive",
-                        f"file={path_to_os},format={storage_format},if=none,id=os_disk",
+                        f"file=\"{path_to_os}\",format={storage_format},if=none,id=os_disk",
                         "-device",
                         "ahci,id=ahci",
                         "-device",
@@ -348,7 +345,7 @@ class QemuCommandBuilder:
         netdev_config = "user,id=net0"
 
         if forward_ports:
-            self._logger.debug("Configuring port forwarding: %s", forward_ports)
+            self._logger.debug(f"Configuring port forwarding: {forward_ports}")
             for port in forward_ports:
                 netdev_config += f",hostfwd=tcp::{port}-:{port}"
 
@@ -467,7 +464,7 @@ class QemuCommandBuilder:
         self._args.extend(
             [
                 "-chardev",
-                f"socket,id=chrtpm,path={tpm_dev}",
+                f"socket,id=chrtpm,path=\"{tpm_dev}\"",
                 "-tpmdev",
                 "emulator,id=tpm0,chardev=chrtpm",
             ]
@@ -513,7 +510,7 @@ class QemuCommandBuilder:
 
         if port:
             self._gdb_server_added = True
-            self._logger.info("Enabling GDB server on tcp:%s:%s", ip, port)
+            self._logger.info(f"Enabling GDB server on tcp:{ip}:{port}")
             self._args.extend(["-gdb", f"tcp:{ip}:{port}"])
         return self
 

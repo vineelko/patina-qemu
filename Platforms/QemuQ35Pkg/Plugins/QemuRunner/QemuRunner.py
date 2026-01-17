@@ -58,6 +58,10 @@ class QemuRunner(uefi_helper_plugin.IUefiHelperPlugin):
         return val.strip().lower() in ("true", "yes", "y", "1")
 
     @staticmethod
+    def GetBuildStr(env, key: str, default: str | None = None) -> str | None:
+        return env.GetBuildValue(key) or default
+
+    @staticmethod
     def GetBool(env, key: str, default: bool = False) -> bool:
         val = env.GetValue(key)
         if val is None:
@@ -74,7 +78,7 @@ class QemuRunner(uefi_helper_plugin.IUefiHelperPlugin):
 
         alt_boot_enable = QemuRunner.GetBool(env, "ALT_BOOT_ENABLE", False)
         boot_to_front_page = QemuRunner.GetBool(env, "BOOT_TO_FRONT_PAGE", False)
-        core_count = QemuRunner.GetStr(env, "QEMU_CORE_NUM")
+        core_count = QemuRunner.GetBuildStr(env, "QEMU_CORE_NUM")
         cpu_model = QemuRunner.GetStr(env, "CPU_MODEL")
         dfci_files = QemuRunner.GetStr(env, "DFCI_FILES")
         dfci_var_store = QemuRunner.GetStr(env, "DFCI_VAR_STORE")

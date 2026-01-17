@@ -53,6 +53,10 @@ class QemuRunner(uefi_helper_plugin.IUefiHelperPlugin):
         return val.strip().lower() in ("true", "yes", "y", "1")
 
     @staticmethod
+    def GetBuildStr(env, key: str, default: str | None = None) -> str | None:
+        return env.GetBuildValue(key) or default
+
+    @staticmethod
     def GetBool(env, key: str, default: bool = False) -> bool:
         val = env.GetValue(key)
         if val is None:
@@ -86,7 +90,7 @@ class QemuRunner(uefi_helper_plugin.IUefiHelperPlugin):
 
         alt_boot_enable = QemuRunner.GetBool(env, "ALT_BOOT_ENABLE", False)
         boot_to_front_page = QemuRunner.GetBool(env, "BOOT_TO_FRONT_PAGE", False)
-        core_count = QemuRunner.GetStr(env, "QEMU_CORE_NUM")
+        core_count = QemuRunner.GetBuildStr(env, "QEMU_CORE_NUM")
         cpu_model = QemuRunner.GetStr(env, "CPU_MODEL")
         executable = QemuRunner.GetStr(env, "QEMU_PATH")
         gdb_server_port = QemuRunner.GetStr(env, "GDB_SERVER")
@@ -95,13 +99,13 @@ class QemuRunner(uefi_helper_plugin.IUefiHelperPlugin):
         output_path = QemuRunner.GetStr(env, "BUILD_OUTPUT_BASE")
         path_to_os = QemuRunner.GetStr(env, "PATH_TO_OS")
         qemu_accelerator = QemuRunner.GetStr(env, "QEMU_ACCEL")
-        qemu_ext_dep_dir = QemuRunner.GetStr(env, "QEMU_DIR")
         qemu_executable_path = QemuRunner.GetStr(env, "QEMU_PATH")
+        qemu_ext_dep_dir = QemuRunner.GetStr(env, "QEMU_DIR")
+        repo_version = QemuRunner.GetStr(env, "VERSION", "Unknown")
         serial_port = QemuRunner.GetStr(env, "SERIAL_PORT")
         smm_enabled = QemuRunner.GetBuildBool(env, "SMM_ENABLED", True)
         tpm_dev = QemuRunner.GetStr(env, "TPM_DEV")
         virtual_drive = QemuRunner.GetStr(env, "VIRTUAL_DRIVE_PATH")
-        repo_version = QemuRunner.GetStr(env, "VERSION", "Unknown")
 
         code_fd = os.path.join(output_path, "FV", "QEMU_EFI.fd")
         var_store = os.path.join(output_path, "FV", "SECURE_FLASH0.fd")
