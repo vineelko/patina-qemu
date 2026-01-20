@@ -73,7 +73,7 @@ class QemuCommandBuilder:
 
         self._rom_path_added = True
         self._logger.debug(f"Setting ROM path to: {rom_dir}")
-        self._args.extend(["-L", f"\"{str(Path(rom_dir))}\""])
+        self._args.extend(["-L", f"{str(Path(rom_dir))}"])
         return self
 
     def with_machine(self, smm_enabled=True, accel=None):
@@ -140,9 +140,9 @@ class QemuCommandBuilder:
             self._args.extend(
                 [
                     "-drive",
-                    f"if=pflash,format=raw,unit=0,file=\"{str(code_fd)}\",readonly=on",
+                    f"if=pflash,format=raw,unit=0,file={str(code_fd)},readonly=on",
                     "-drive",
-                    f"if=pflash,format=raw,unit=1,file=\"{str(vars_fd)}\"",
+                    f"if=pflash,format=raw,unit=1,file={str(vars_fd)}",
                 ]
             )
         elif self._architecture == QemuArchitecture.SBSA:
@@ -151,12 +151,12 @@ class QemuCommandBuilder:
             # Unit 1: QEMU_EFI.fd (readonly)
             if vars_fd:
                 self._args.extend(
-                    ["-drive", f"if=pflash,format=raw,unit=0,file=\"{str(vars_fd)}\""]
+                    ["-drive", f"if=pflash,format=raw,unit=0,file={str(vars_fd)}"]
                 )
             self._args.extend(
                 [
                     "-drive",
-                    f"if=pflash,format=raw,unit=1,file=\"{str(code_fd)}\",readonly=on",
+                    f"if=pflash,format=raw,unit=1,file={str(code_fd)},readonly=on",
                 ]
             )
 
@@ -216,7 +216,7 @@ class QemuCommandBuilder:
             self._args.extend(
                 [
                     "-drive",
-                    f"file=\"{drive_file}\",format={drive_format},media=disk,if=none,id={drive_id}",
+                    f"file={drive_file},format={drive_format},media=disk,if=none,id={drive_id}",
                     "-device",
                     f"usb-storage,bus=usb.0,drive={drive_id}",
                 ]
@@ -225,7 +225,7 @@ class QemuCommandBuilder:
             self._args.extend(
                 [
                     "-drive",
-                    f"file=fat:rw:\"{drive_file}\",format={drive_format},media=disk,if=none,id={drive_id}",
+                    f"file=fat:rw:{drive_file},format={drive_format},media=disk,if=none,id={drive_id}",
                     "-device",
                     f"usb-storage,bus=usb.0,drive={drive_id}",
                 ]
@@ -247,13 +247,13 @@ class QemuCommandBuilder:
 
         if os.path.isfile(virtual_drive):
             self._logger.debug(f"Mounting virtual drive file: {virtual_drive}")
-            self._args.extend(["-drive", f"file=\"{virtual_drive}\",if=virtio"])
+            self._args.extend(["-drive", f"file={virtual_drive},if=virtio"])
         elif os.path.isdir(virtual_drive):
             self._logger.debug(
                 "Mounting virtual drive directory as FAT filesystem: %s", virtual_drive
             )
             self._args.extend(
-                ["-drive", f"file=fat:rw:\"{virtual_drive}\",format=raw,media=disk"]
+                ["-drive", f"file=fat:rw:{virtual_drive},format=raw,media=disk"]
             )
         else:
             self._logger.error(
@@ -292,13 +292,13 @@ class QemuCommandBuilder:
             raise Exception(f"Unknown OS storage type: {path_to_os}")
 
         if storage_format == "iso":
-            self._args.extend(["-cdrom", f"\"{path_to_os}\""])
+            self._args.extend(["-cdrom", f"{path_to_os}"])
         else:
             if self._architecture == QemuArchitecture.Q35:
                 self._args.extend(
                     [
                         "-drive",
-                        f"file=\"{path_to_os}\",format={storage_format},if=none,id=os_nvme",
+                        f"file={path_to_os},format={storage_format},if=none,id=os_nvme",
                         "-device",
                         "nvme,serial=nvme-1,drive=os_nvme",
                     ]
@@ -307,7 +307,7 @@ class QemuCommandBuilder:
                 self._args.extend(
                     [
                         "-drive",
-                        f"file=\"{path_to_os}\",format={storage_format},if=none,id=os_disk",
+                        f"file={path_to_os},format={storage_format},if=none,id=os_disk",
                         "-device",
                         "ahci,id=ahci",
                         "-device",
@@ -464,7 +464,7 @@ class QemuCommandBuilder:
         self._args.extend(
             [
                 "-chardev",
-                f"socket,id=chrtpm,path=\"{tpm_dev}\"",
+                f"socket,id=chrtpm,path={tpm_dev}",
                 "-tpmdev",
                 "emulator,id=tpm0,chardev=chrtpm",
             ]

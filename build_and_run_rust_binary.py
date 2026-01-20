@@ -251,6 +251,7 @@ def _configure_settings(args: argparse.Namespace) -> Dict[str, Path]:
         rom_path = str(
             SCRIPT_DIR / "QemuPkg" / "Binaries" / "qemu-win_extdep" / "share"
         )
+
         qemu_cmd_builder = (
             QemuCommandBuilder(qemu_exec, QemuArchitecture.Q35)
             .with_cpu(core_count=4)
@@ -386,7 +387,7 @@ def _configure_settings(args: argparse.Namespace) -> Dict[str, Path]:
 
     (executable, qemu_args) = qemu_cmd_builder.build()
 
-    logging.info("QEMU Command: " + executable)
+    logging.info("QEMU Command: " + executable + " " + " ".join(qemu_args))
     return {
         "build_cmd": build_cmd,
         "build_target": args.build_target,
