@@ -141,18 +141,38 @@ jobs:
         run: pip install -r pip-requirements.txt
       
       # Run the build-platform action, which calls stuart_setup, stuart_update, and stuart_build
-      - name: Build and Run ${{ matrix.platform }} ${{ matrix.target }} ${{ matrix.tool-chain}} ${{ matrix.architecture || '' }}
+      - name: Prepare and Build ${{ matrix.platform }} ${{ matrix.target }} ${{ matrix.tool-chain}} ${{ matrix.architecture || '' }}
+        id: build-platform
         uses: ./.github/actions/build-platform
         with:
+          command: 'build'
           platform-config: ${{ matrix.config }}
           platform-name: ${{ matrix.platform }}
           target: ${{ matrix.target }}
           tool-chain: ${{ matrix.tool-chain }}
           # Only pass architecture if it is defined in the matrix
           architecture: ${{ matrix.architecture || '' }}
-          flash: 'true'
           stuart-args: 'SHUTDOWN_AFTER_RUN=TRUE QEMU_HEADLESS=TRUE BLD_*_QEMU_CORE_NUM=${{ needs.vars.outputs.qemu-core-count }} ${{ matrix.extra-args }}'
-          publish-logs: 'true'
+
+      - name: Run ${{ matrix.platform }} ${{ matrix.target }} ${{ matrix.tool-chain}} ${{ matrix.architecture || '' }}
+        uses: ./.github/actions/build-platform
+        with:
+          command: 'flash'
+          platform-config: ${{ matrix.config }}
+          platform-name: ${{ matrix.platform }}
+          target: ${{ matrix.target }}
+          tool-chain: ${{ matrix.tool-chain }}
+          # Only pass architecture if it is defined in the matrix
+          architecture: ${{ matrix.architecture || '' }}
+          stuart-args: 'SHUTDOWN_AFTER_RUN=TRUE QEMU_HEADLESS=TRUE BLD_*_QEMU_CORE_NUM=${{ needs.vars.outputs.qemu-core-count }} ${{ matrix.extra-args }}'
+      
+      - name: Publish Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          # Specify architecture if it is not empty
+          name: build-logs-${{ matrix.platform }}-${{ matrix.target }}-${{ matrix.tool-chain }}${{ matrix.architecture && format('-{0}', matrix.architecture) || '' }}
+          path: ${{ steps.build-platform.outputs.log-path }}
 
   # A final job to indicate that all builds are complete. This allows the github required checks to
   # be targeted at a single job, instead of all the jobs in the matrix, which may change over time.
