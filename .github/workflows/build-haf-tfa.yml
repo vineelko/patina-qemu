@@ -50,6 +50,9 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global --add safe.directory $GITHUB_WORKSPACE
 
+      - name: Redirect Hafnium Submodule URLs
+        uses: ./.github/actions/redirect-hafnium-urls
+
       - name: Stuart Setup
         run: python Platforms/QemuSbsaPkg/PlatformBuild.py --setup
 

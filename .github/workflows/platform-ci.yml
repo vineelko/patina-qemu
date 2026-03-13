@@ -110,6 +110,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r pip-requirements.txt
 
+      - name: Redirect Hafnium Submodule URLs
+        uses: ./.github/actions/redirect-hafnium-urls
+
       # Run the build-platform action, which calls stuart_setup, stuart_update, and stuart_build
       - name: Prepare and Build ${{ matrix.platform }} ${{ matrix.target }} ${{ matrix.tool-chain}}
         id: build-platform
@@ -211,6 +214,9 @@ jobs:
       # Install the pip dependencies needed to run stuart for the platform(s)
       - name: Install dependencies
         run: pip install -r pip-requirements.txt
+
+      - name: Redirect Hafnium Submodule URLs
+        uses: ./.github/actions/redirect-hafnium-urls
 
       # Build with readiness tool
       - name: Prepare and Build ${{ matrix.platform }} ${{ matrix.target }} ${{ matrix.tool-chain}}

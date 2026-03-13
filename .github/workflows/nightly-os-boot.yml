@@ -193,6 +193,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r pip-requirements.txt
 
+      - name: Redirect Hafnium Submodule URLs
+        uses: ./.github/actions/redirect-hafnium-urls
+
       - name: Download OS Boot Artifacts
         uses: actions/download-artifact@v8
         with:

@@ -73,19 +73,22 @@ jobs:
       # Install the pip dependencies needed to run stuart for the platform(s)
       - name: Install dependencies
         run: pip install -r pip-requirements.txt
-      
+
+      - name: Redirect Hafnium Submodule URLs
+        uses: ./.github/actions/redirect-hafnium-urls
+
       - name: Create startup NSH
         run: |
           touch ${{ env.STARTUP_NSH_PATH }}
           echo "if not exist UefiLogs then" >> ${{ env.STARTUP_NSH_PATH }}
-          echo "  mkdir UefiLogs" >> ${{ env.STARTUP_NSH_PATH }} 
+          echo "  mkdir UefiLogs" >> ${{ env.STARTUP_NSH_PATH }}
           echo "  reset" >> ${{ env.STARTUP_NSH_PATH }}
           echo "endif" >> ${{ env.STARTUP_NSH_PATH }}
           echo "AdvancedLogDumper.efi -o ${{ env.LOG_FILE }}" >> ${{ env.STARTUP_NSH_PATH }}
       
       # Run the build-platform action, which calls stuart_setup, stuart_update, and stuart_build
       - name: Prepare and Build
-        id: build-platform  
+        id: build-platform
         uses: ./.github/actions/build-platform
         with:
           command: 'build'
