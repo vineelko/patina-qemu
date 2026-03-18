@@ -172,6 +172,12 @@ def _parse_arguments() -> argparse.Namespace:
         "--patina-dxe-core-repo.",
     )
     parser.add_argument(
+        "--do-not-exit-on-patina-test-failure",
+        action="store_true",
+        default=False,
+        help="Pass --do-not-exit-on-patina-test-failure to not exit QEMU when a Patina test fails.",
+    )
+    parser.add_argument(
         "--monitor-port",
         "-m",
         type=int,
@@ -437,9 +443,14 @@ def _configure_settings(args: argparse.Namespace) -> Dict[str, Path]:
     else:
         raise ValueError(f"Unsupported platform: {args.platform}")
 
+    pass_through_args = []
     if args.features is not None:
-        build_cmd.append("--features")
-        build_cmd.append(str(args.features))
+        pass_through_args.extend(["--features", str(args.features)])
+    if args.do_not_exit_on_patina_test_failure:
+        pass_through_args.extend(["--exclude-features", "exit_on_patina_test_failure"])
+    if pass_through_args:
+        build_cmd.append("--")
+        build_cmd.extend(pass_through_args)
 
     (executable, qemu_args) = qemu_cmd_builder.build()
 
