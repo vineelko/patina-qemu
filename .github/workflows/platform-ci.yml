@@ -89,12 +89,9 @@ jobs:
         uses: actions/checkout@v6
 
       # Configure git for use in the container. Specifically needed for the FFA builds
-      - name: Container Configuration
+      - name: Configure Git
         if: ${{ matrix.container != null }}
-        run: |
-          git config --global --add safe.directory '*'
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+        uses: ./.github/actions/configure-git
 
       # Set the version of Python to use when outside of a container. Otherwise just use what's
       # in the container.
@@ -194,12 +191,9 @@ jobs:
         uses: actions/checkout@v6
 
       # Configure git for use in the container. Specifically needed for the FFA builds
-      - name: Container Configuration
+      - name: Configure Git
         if: ${{ matrix.container != null }}
-        run: |
-          git config --global --add safe.directory '*'
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+        uses: ./.github/actions/configure-git
 
       # Set the version of Python to use when outside of a container. Otherwise just use what's
       # in the container.

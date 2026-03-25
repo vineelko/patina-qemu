@@ -183,11 +183,8 @@ jobs:
         uses: actions/checkout@v6
 
       # Configure git for use in the container. Specifically needed for the FFA builds
-      - name: Container Configuration
-        run: |
-          git config --global --add safe.directory '*'
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+      - name: Configure Git
+        uses: ./.github/actions/configure-git
       
       # Install the pip dependencies needed to run stuart for the platform(s)
       - name: Install dependencies
