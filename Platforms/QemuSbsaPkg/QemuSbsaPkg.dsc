@@ -454,6 +454,7 @@
   PerformanceLib|MdeModulePkg/Library/DxePerformanceLib/DxePerformanceLib.inf
   MemoryAllocationLib|MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib.inf
   HiiLib|MdeModulePkg/Library/UefiHiiLib/UefiHiiLib.inf
+  IntrinsicLib|CryptoPkg/Library/IntrinsicLib/IntrinsicLib.inf
 
 #########################################
 # Advanced Logger Libraries
@@ -1235,6 +1236,17 @@
 
   # FF-A test application to test the FF-A interface
   FfaFeaturePkg/Applications/FfaPartitionTest/FfaPartitionTestApp.inf
+
+# The TpmTestApp can run without TPM enabled. It will report that the
+# Tcg2Protocol was not installed, however, it really isn't meant to run
+# without TPM enabled. TPM_TEST_APP_ENABLE prevents an issue in CI where
+# all TestApps are auto included to run.
+!if $(TPM2_ENABLE) == TRUE
+!if $(TPM_TEST_APP_ENABLE) == TRUE
+  # TPM test application to test PCR bank operations via TCG2 Protocol
+  SecurityPkg/Applications/TpmTestApp/TpmTestApp.inf
+!endif
+!endif
 
 ###################################################################################################
 #
