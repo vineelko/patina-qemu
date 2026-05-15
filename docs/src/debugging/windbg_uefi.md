@@ -55,18 +55,23 @@ The `patina-qemu` UEFI platform build, by default, uses a pre-compiled DXE Core 
 the [`patina-dxe-core-qemu`](https://github.com/OpenDevicePartnership/patina-dxe-core-qemu) repository. Since these
 binaries have debug disabled, the following steps enable debug and override the default.
 
-> **Note:** The following steps are for the Q35 build, but the same can be done for the SBSA build. They use the build
-> command-line parameter `BLD_*_DXE_CORE_BINARY_OVERRIDE` to override the current DXE Core with the new file. For
-> other options such as patching a UEFI FD binary, see the
-> [Rapid Patina Iteration](../building/rapid_iteration.md) page.
+```admonish note
+The following steps are for the Q35 build, but the same can be done for the SBSA build. They use the build
+command-line parameter `BLD_*_DXE_CORE_BINARY_OVERRIDE` to override the current DXE Core with the new file. For other
+options such as patching a UEFI FD binary, see the [Rapid Patina Iteration](../building/rapid_iteration.md) page.
+```
 
 - Clone the Patina DXE Core QEMU repository into a new directory.
 - Build it:
   - Debug build (debugger included): `cargo make q35`
   - Release build: `cargo make q35-release --features build_debugger`
 - The output file will be: `/target/x86_64-unknown-uefi/debug/qemu_q35_dxe_core.efi`
-  > The output `.efi` file contains only the `.pdb` file name, not the full path. When using WinDbg, set the path to
-  > the directory containing the `.pdb` file appropriately (as described in [Software Debugging](#instance-1-software-debugging)).
+
+  ```admonish warning
+  The output `.efi` file contains only the `.pdb` file name, not the full path. When using WinDbg, set the path to
+  the directory containing the `.pdb` file appropriately (as described in
+  [Software Debugging](#instance-1-software-debugging)).
+  ```
 
 - Return to this repository's directory and rebuild the `patina-qemu` UEFI using the `BLD_*_DXE_CORE_BINARY_OVERRIDE`
   command-line parameter to indicate which override DXE Core driver to use:
@@ -98,10 +103,12 @@ binaries have debug disabled, the following steps enable debug and override the 
    .srcpath+ <path to src dir> ; usually <cloned dir>\src
    ```
 
-    > You can avoid setting this for every debug session by configuring the `_NT_SYMBOL_PATH` environment variable, for
-    > example:
-    >
-    > `C:\repos\patina-dxe-core-qemu\target\x86_64-unknown-uefi\debug;C:\repos\patina-dxe-core-qemu\target\aarch64-unknown-uefi\debug;srv*c:\symbolspri*https://symweb.azurefd.net;srv*C:\Symbols*https://msdl.microsoft.com/download/symbols`
+   ```admonish tip
+   You can avoid setting this for every debug session by configuring the `_NT_SYMBOL_PATH` environment variable, for
+   example:
+
+   `C:\repos\patina-dxe-core-qemu\target\x86_64-unknown-uefi\debug;C:\repos\patina-dxe-core-qemu\target\aarch64-unknown-uefi\debug;srv*c:\symbolspri*https://symweb.azurefd.net;srv*C:\Symbols*https://msdl.microsoft.com/download/symbols`
+   ```
 
 3. Initialize the UEFI debugger extension:
 

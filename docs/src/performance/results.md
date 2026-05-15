@@ -14,9 +14,10 @@ The performance component must be enabled to collect FBPT results. Example code 
 [Enabling Performance Measurements](https://github.com/OpenDevicePartnership/patina/blob/main/components/patina_performance/README.md#enabling-performance-measurements-during-boot)
 in the main `patina` repo.
 
-Note that
-[performance collection is already enabled by default](https://github.com/OpenDevicePartnership/patina-dxe-core-qemu/blob/main/bin/q35_dxe_core.rs)
+```admonish note
+[Performance collection is already enabled by default](https://github.com/OpenDevicePartnership/patina-dxe-core-qemu/blob/main/bin/q35_dxe_core.rs)
 for Q35 in `patina-dxe-core-qemu`.
+```
 
 ### 2. Boot and Collect FBPT Binary
 

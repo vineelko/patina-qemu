@@ -29,9 +29,11 @@ LLVM version 21 or greater is recommended for use with EDK II and related projec
 [LLVM itself](https://github.com/llvm/llvm-project/releases). Add the directory containing the `clang` executable to
 your `PATH` (restarting the terminal if necessary) and follow the steps below to build with Stuart.
 
-> **Note:** By default, Hafnium and TF-A (used in the `QemuSbsaPkg` build) are pulled in as precompiled binaries.
-> Passing `HAF_TFA_BUILD=TRUE` on the `stuart_build` command line recompiles these components. This is only supported
-> on Linux as those projects do not build natively on Windows. They still use clang to compile.
+```admonish note title="Hafnium and TF-A"
+By default, Hafnium and TF-A (used in the `QemuSbsaPkg` build) are pulled in as precompiled binaries. Passing
+`HAF_TFA_BUILD=TRUE` on the `stuart_build` command line recompiles these components. This is only supported on Linux
+as those projects do not build natively on Windows. They still use clang to compile.
+```
 
 ## Building with Pytools
 
@@ -97,14 +99,14 @@ your `PATH` (restarting the terminal if necessary) and follow the steps below to
       stuart_build -c Platforms/<Package>/PlatformBuild.py --FlashOnly
       ```
 
-### Notes
-
-1. QEMU is provided on Windows via an external dependency located at `QemuPkg/Binaries`. QEMU must be manually
-   downloaded on Linux.
-2. QEMU on Linux requires at least **version 9.0.2** when booting an operating system. If you are only booting to
-   shell, matching the version of the Windows external dependency is acceptable.
-3. To override the external dependency on Windows, or the installed version on Linux, use `QEMU_PATH=<path>` on the
-   command line.
+```admonish info title="QEMU Notes"
+- QEMU is provided on Windows via an external dependency located at `QemuPkg/Binaries`. QEMU must be manually
+  downloaded on Linux.
+- QEMU on Linux requires at least **version 9.0.2** when booting an operating system. If you are only booting to
+  shell, matching the version of the Windows external dependency is acceptable.
+- To override the external dependency on Windows, or the installed version on Linux, use `QEMU_PATH=<path>` on the
+  command line.
+```
 
 ### Custom Build Options
 

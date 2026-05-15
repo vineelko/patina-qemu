@@ -3,8 +3,9 @@
 This document is a reference for the current set of size-related optimizations performed on the Patina DXE Core
 release binary.
 
-**TL;DR:** Below is a summary of the current status of the QEMU DXE Core binary size, marking the logical conclusion
-of the size optimization efforts.
+```admonish abstract title="TL;DR"
+Summary of the current status of the QEMU DXE Core binary size, marking the logical conclusion of the size
+optimization efforts:
 
 1. Rust compiler size related optimizations (**Applied**)
 2. Disabling logging can save an additional 150 KB (**Not Applied**)
@@ -13,6 +14,7 @@ of the size optimization efforts.
 4. Excluding Patina debugger support saves another 55 KB (**Not Applied**)
 
 Bringing the size from 1,162 KB to **406 KB** (a reduction of 65%). The details are documented below.
+```
 
 ## 1. Common Rust Compiler Optimizations Focused on Reducing Binary Size
 

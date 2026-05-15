@@ -2,8 +2,12 @@
 
 The `build_and_run_rust_binary.py` script is intended for rapid development of Patina in this repository. It takes a
 prebuilt FD (from a previous `stuart_build` invocation) and patches a new Patina DXE Core into it. This greatly speeds
-up the development loop because none of the C components are rebuilt. When a C component is changed, `stuart_build`
-must be re-run to rebuild the full platform.
+up the development loop because none of the C components are rebuilt.
+
+```admonish warning
+When a C component is changed, `stuart_build` must be re-run to rebuild the full platform. The patcher only updates
+the Patina DXE Core within an existing FD.
+```
 
 ## Prerequisites
 
