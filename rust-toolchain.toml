@@ -1,0 +1,23 @@
+# NOTE: This file is automatically synchronized from Patina DevOps. Update the original file there
+#       instead of the file in this repo.
+#
+# - Patina DevOps Repo: https://github.com/OpenDevicePartnership/patina-devops
+# - File Sync Settings: https://github.com/OpenDevicePartnership/patina-devops/blob/main/.sync/Files.yml
+#
+# This file is used to set the mdbook tool versions used by this repository.
+#
+# The mdbook is built locally and in CI and this provides a common location for
+# the versions to be defined, reusing CI logic that parses this file to install
+# the tools.
+#
+# At this time, no Rust code is actually built in this repository, but a [toolchain]
+# section is required, so it is just set to stable.
+
+[toolchain]
+channel = "stable"
+
+[tools]
+mdbook = "0.4.52"
+mdbook-admonish = "1.20.0"
+mdbook-linkcheck = "0.7.7"
+mdbook-mermaid = "0.16.2"

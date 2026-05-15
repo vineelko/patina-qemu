@@ -3,28 +3,54 @@
 [![CI](https://github.com/OpenDevicePartnership/patina-qemu/actions/workflows/platform-ci.yml/badge.svg)](https://github.com/OpenDevicePartnership/patina-qemu/actions/workflows/platform-ci.yml)
 [![Nightly Regression Tests](https://github.com/OpenDevicePartnership/patina-qemu/actions/workflows/nightly-os-boot.yml/badge.svg?event=schedule)](https://github.com/OpenDevicePartnership/patina-qemu/actions/workflows/nightly-os-boot.yml)
 
-The primary purpose of this repository is to serve as a test vehicle for the Patina project. It can be used as a
-reference for a simple integration of Patina with EDK II components. It contains a permanent fork of
-[OvmfPkg](https://github.com/tianocore/edk2/tree/HEAD/OvmfPkg) from EDK II with changes based on the following:
+The primary purpose of this repository is to serve as a test vehicle for the Patina project. It can also be used as
+a reference for a simple integration of Patina with EDK II components. It contains a permanent fork of
+[`OvmfPkg`](https://github.com/tianocore/edk2/tree/HEAD/OvmfPkg) from EDK II adapted for Patina.
 
-- Documentation
-  - [Open Device Partnership (ODP) documentation](https://opendevicepartnership.org/)
-  - [Patina project documentation](https://opendevicepartnership.github.io/patina/)
-- GitHub Links
-  - [ODP GitHub organization](https://github.com/OpenDevicePartnership)
-  - [Patina GitHub repository](https://github.com/OpenDevicePartnership/patina)
-  - [Patina DXE Core QEMU repository](https://github.com/OpenDevicePartnership/patina-dxe-core-qemu) showcasing the
-    Patina DXE core .efi binary used by this repository
+## Documentation
 
-## Compiling this Repository
+All `patina-qemu` platform documentation is maintained in the [`docs/`](./docs) mdBook. Start with the
+[Introduction](./docs/src/introduction.md). The two supported platforms have their own documentation pages:
 
-There are two platforms currently supported in this repository: Q35 and SBSA. They have build documentation
-listed in their READMEs:
+- [QEMU Q35](./docs/src/platforms/q35.md)
+- [QEMU SBSA](./docs/src/platforms/sbsa.md)
 
-- [QEMU Q35](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/Platforms/Docs/Q35/QemuQ35_ReadMe.md)
-- [QEMU SBSA](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/Platforms/Docs/SBSA/QemuSbsa_ReadMe.md)
+Other common topics:
 
-## Platform Validation Testing
+- [Building the Firmware](./docs/src/building/building.md)
+- [Rapid Patina Iteration](./docs/src/building/rapid_iteration.md)
+- [WinDbg + QEMU + Patina UEFI Debugging Guide](./docs/src/debugging/windbg_uefi.md)
+- [WinDbg + QEMU + Windows OS Debugging Guide](./docs/src/debugging/windbg_windows.md)
 
-This repository contains scheduled github workflows to detect regressions in firmware. See
-[Platforms/Docs/Common/regression-testing.md](https://github.com/OpenDevicePartnership/patina-qemu/tree/main/Platforms/Docs/Common/regression-testing.md).
+The book is built with [mdBook](https://rust-lang.github.io/mdBook/).
+
+## Building the Book Locally
+
+The pinned versions of mdBook and its preprocessors are defined in the `[tools]` section of
+[`rust-toolchain.toml`](./rust-toolchain.toml). CI installs the same versions from this file.
+
+To install them locally, install [Rust](https://rustup.rs) and then run `cargo install --locked <name>@<version>` for
+each entry under `[tools]`. For example:
+
+```bash
+cargo install --locked mdbook@<version>
+```
+
+Substitute [`cargo binstall`](https://github.com/cargo-bins/cargo-binstall) for `cargo install` if you have it for
+faster installs from prebuilt binaries.
+
+Then serve the book from the `docs/` directory:
+
+```bash
+cd docs
+mdbook serve --open
+```
+
+## Related Links
+
+- [Open Device Partnership (ODP)](https://opendevicepartnership.org/)
+- [Patina project documentation](https://opendevicepartnership.github.io/patina/)
+- [Patina GitHub organization](https://github.com/OpenDevicePartnership)
+- [Patina GitHub repository](https://github.com/OpenDevicePartnership/patina)
+- [Patina DXE Core QEMU](https://github.com/OpenDevicePartnership/patina-dxe-core-qemu)
+  - The Patina DXE Core `.efi` binary used by this repository

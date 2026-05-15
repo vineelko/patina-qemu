@@ -1,6 +1,6 @@
 # A workflow to validate advanced logger workflows work as expected.
 #
-# Please refer to [Platforms/Docs/Common/regression-testing.md](https://github.com/OpenDevicePartnership/patina-qemu/tree/main/Platforms/Docs/Common/regression-testing.md)
+# Please refer to [docs/src/testing/regression_testing.md](https://github.com/OpenDevicePartnership/patina-qemu/tree/main/docs/src/testing/regression_testing.md)
 # for more information on regression testing performed in this repository, including Advanced Logger tests.
 #
 ##

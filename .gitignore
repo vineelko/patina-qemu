@@ -10,6 +10,7 @@ __pycache__/
 /Conf/
 /target
 BuildConfig.conf
+docs/book/
 tags/
 *secure_mm.log
 *secure.log
